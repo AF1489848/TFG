@@ -1,9 +1,89 @@
-#!/bin/bash
-#SBATCH --job-name=myjob
-#SBATCH --output=output.txt
+#!/bin/bash -l
+
+#SBATCH --job-name="AC-red"
+#SBATCH -w stanlee
+#SBATCH --exclusive
+#SBATCH --time=1200:00:00
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=1
-#SBATCH --time=00:30:00
-#SBATCH --mem=1G
-echo 'Hello, world!'
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=128
+#SBATCH --output=stanlee-red-OUT-%j.log
+#SBATCH --error=stanlee-red-ERR-%j.log
+
+#module load gcc/7.3.0n
+module load gcc/9.2.0
+module load likwid/5.1.2
+module load openmpi/3.0.4
+module load conda
+
+cd
+source $HOME/.bashrc
+source $HOME/tools/spack/share/spack/setup-env.sh
+#spack load python arch=linux-centos7-sandybridge
+spack load python arch=`spack arch`
+
+#mkdir openmp
+cd /home/suren/legacy_tools/stream_modified/amd_stanlee
+#rm time.log
+#Delete the existing directories
+rm -r close_ctrs_stats 
+rm -r spread_ctrs_stats
+rm -r close_ctrs_threads
+rm -r spread_ctrs_threads
+rm -r close_metrics_stats
+rm -r spread_metrics_stats
+rm -r close_metrics_threads
+rm -r spread_metrics_threads
+rm -r close_raw
+rm -r spread_raw
+#Create the directories
+mkdir close_ctrs_stats
+mkdir spread_ctrs_stats
+mkdir close_ctrs_threads
+mkdir spread_ctrs_threads
+mkdir close_metrics_stats
+mkdir spread_metrics_stats
+mkdir close_metrics_threads
+mkdir spread_metrics_threads
+mkdir close_raw
+mkdir spread_raw
+#Copy the 
+cp $HOME/legacy_tools/scripts/join.py close_ctrs_stats/join.py
+cp $HOME/legacy_tools/scripts/join.py spread_ctrs_stats/join.py
+cp $HOME/legacy_tools/scripts/join-close-spread.py spread_ctrs_stats/join-close-spread.py
+cp $HOME/legacy_tools/scripts/join-close-spread.py join-close-spread.py
+cp $HOME/legacy_tools/scripts/Create_T_list.ipynb Create_T_list.ipynb
+cp $HOME/legacy_tools/scripts/Create_T_list-Penguin-Modded-order.ipynb Create_T_list-Penguin-Modded-order.ipynb
+
+#Modify this to the number of cores in your system, cores instead of threads.
+#todo modify accordig to stanlee nums
+#USE THIS FOR THE CLOSED CASE
+export OMP_PLACES="{0},{8},{16},{24},{32},{40},{48},{56},{2},{10},{18},{26},{34},{42},{50},{58},{4},{12},{20},{28},{36},{44},{52},{60},{6},{14},{22},{30},{38},{46},{54},{62},{1},{9},{17},{25},{33},{41},{49},{57},{3},{11},{19},{27},{35},{43},{51},{59},{5},{13},{21},{29},{37},{45},{53},{61},{7},{15},{23},{31},{39},{47},{55},{63}"
+export OMP_PROC_BIND=close
+##Prova likwid
+for tun in BRANCH #CACHE CLOCK CPI DATA DIVIDE ENERGY FLOPS_DP FLOPS_SP ICACHE L2 L3 MEM MEM_DP MEM_SP NUMA TLB
+do
+      echo $tun
+      #Modify this to the number of cores in your system, cores instead of threads.
+      #todo modify 1..64 instead
+      for threads in {7..64} ## 64
+      do
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
