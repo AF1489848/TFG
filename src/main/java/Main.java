@@ -1,4 +1,4 @@
-import static Functions.generarScriptSlurm.generarScript;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -11,7 +11,7 @@ public class Main {
 
         String scriptName = scriptPrefix + ".sub";
         String scriptPath = outputDirectory + "/" + scriptName;
-        generarScript(scriptPath);
+        generarScriptSlurm.generarScript(scriptPath);
 
     }
 
