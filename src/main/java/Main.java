@@ -278,7 +278,7 @@ public class Main {
         System.out.println("Hello world!");
 
 
-        String scriptPrefix = "job_2script"; // Prefijo para los nombres de los scripts
+        String scriptPrefix = "job_script"; // Prefijo para los nombres de los scripts
         String outputDirectory = "./target/Scripts"; // Directorio de salida para los scripts
 
 
