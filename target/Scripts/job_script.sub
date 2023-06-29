@@ -68,22 +68,167 @@ do
       #todo modify 1..64 instead
       for threads in {7..64} ## 64
       do
+                echo $threads
+                export OMP_NUM_THREADS=$threads
+
+		#USE THESE SIZES FOR STANLEE
+                #for size in 1024
+                for size in 7936 15872 23808 31744 39680 47616 #55552 63488 71424 79360 87296 95232 103168 111104 119040 126976 134912 142848 150784 158720 166656 174592 182528 190464 198400 206336 214272 222208 230144 #238080 246016 253952 261888 392960 523776 654592 785408 916224 1047040 1177856 1308672 1439488 1570304 1701120 1831936 1962752 2093568 2224384 2355200 2486016 2616832 2747648 2878464 3009280 3140096 3270912 3401728 3532544 3663360 3794176 3924992 4055808 4186624 4587520 5636096 6684672 7733248 8781824 9830400 10878976 11927552 12976128 14024704 15073280 16121856 16777216 33554432 75497472
+                do
+			echo $size
+			export size=$size
+                        echo "$tun $threads $size"
+			gcc -llikwid -lm -fopenmp -pthread -o stream-likwid stream-likwid.c -O2 -DN=$size -DNTIMES=1 -DNTHREADS=$threads -DLIKWID_PERFMON -I /lex/software/LIBRARIES/likwid-5.2.1/include -L /lex/software/LIBRARIES/likwid-5.2.1/lib;	
+			for kernel  in {0..33} 	
+			do 
+				for times in {1..100}
+				do
+				likwid-perfctr -g $tun -m -o data.csv -O ./stream-likwid $kernel
+                		cat data.csv >> data_raw.csv 
+				cat data.csv >> data_raw_threads.csv
+				done
+
+				python3 likwid_environment_counters_threads.py 
+				cat data_ctrs_threads.csv >> ${threads}-data-O2-${size}_ctrs_threads.csv
+
+				python3 likwid_environment_metrics_threads.py
+				cat data_metrics_threads.csv >> ${threads}-data-O2-${size}_metrics_threads.csv	
+
+				rm data_raw_threads.csv
+				rm data_ctrs_threads.csv
+
+			done
+		python3 likwid_environment_counters_stats.py
+		python3 likwid_environment_metrics_stats.py
+
+		mv data_raw.csv ${threads}-data-O2-${size}_raw.csv #Create the raw datasets
+
+		cat ${threads}-data-O2-${size}_ctrs_threads.csv >> data_ctrs_threads_header.csv
+		mv data_ctrs_threads_header.csv ${threads}-data-O2-${size}_ctrs_threads.csv
+
+		cat ${threads}-data-O2-${size}_metrics_threads.csv >> data_metrics_threads_header.csv
+                mv data_metrics_threads_header.csv ${threads}-data-O2-${size}_metrics_threads.csv	
+
+		rm data*                #Del old data
+		done
+
+	mkdir -p close_raw/$tun
+        mv *raw.csv close_raw/$tun
+
+	mkdir -p close_ctrs_threads/$tun
+	#sed -i 1i"id;data_size;comp_opt;threads;label;Event;HWThread 0;" ${threads}-data-O2-${size}_ctrs_threads.csv  
+        mv *ctrs_threads.csv close_ctrs_threads/$tun
+
+	mkdir -p close_metrics_threads/$tun
+        #sed -i 1i"id;data_size;comp_opt;threads;label;Event;HWThread 0;" ${threads}-data-O2-${size}_ctrs_threads.csv
+        mv *metrics_threads.csv close_metrics_threads/$tun
+
+	mkdir -p close_metrics_stats/$tun
+        mv *metrics.csv close_metrics_stats/$tun
+
+        mkdir -p close_ctrs_stats/$tun
+        mv *.csv close_ctrs_stats/$tun
+	done
+done
 
 
 
 
+#USE THIS FOR THE SPREAD CASE
+export OMP_PLACES="{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35},{36},{37},{38},{39},{40},{41},{42},{43},{44},{45},{46},{47},{48},{49},{50},{51},{52},{53},{54},{55},{56},{57},{58},{59},{60},{61},{62},{63}"
+export OMP_PROC_BIND=close
 
+##Prova likwid
+for tun in BRANCH #CACHE CLOCK CPI DATA DIVIDE ENERGY FLOPS_DP FLOPS_SP ICACHE L2 L3 MEM MEM_DP MEM_SP NUMA TLB
+do
+        echo $tun
+        #Modify this to the number of cores in your system, cores instead of threads.
+        #todo modify 1..64 instead
+        for threads in {1..64}
+        do
+                echo $threads
+                export OMP_NUM_THREADS=$threads
 
+                #USE THESE SIZES FOR STANLEE
+                #for size in 1024
+                for size in 7936 15872 23808 31744 39680 47616 #55552 63488 71424 79360 87296 95232 103168 111104 119040 126976 134912 142848 150784 158720 166656 174592 182528 190464 198400 206336 214272 222208 230144 #238080 246016 253952 261888 392960 523776 654592 785408 916224 1047040 1177856 1308672 1439488 1570304 1701120 1831936 1962752 2093568 2224384 2355200 2486016 2616832 2747648 2878464 3009280 3140096 3270912 3401728 3532544 3663360 3794176 3924992 4055808 4186624 4587520 5636096 6684672 7733248 8781824 9830400 10878976 11927552 12976128 14024704 15073280 16121856 16777216 33554432 75497472
+                do
+                        echo $size
+                        export size=$size
+                        echo "$tun $threads $size"
+                        gcc -llikwid -lm -fopenmp -pthread -o stream-likwid stream-likwid.c -O2 -DN=$size -DNTIMES=1 -DNTHREADS=$threads -DLIKWID_PERFMON -I /lex/software/LIBRARIES/likwid-5.2.1/include -L /lex/software/LIBRARIES/likwid-5.2.1/lib;
+                        for kernel  in {0..33}
+                        do
+				for times in {1..100}
+                                do
+                                likwid-perfctr -g $tun -m -o data.csv -O ./stream-likwid $kernel
+                                cat data.csv >> data_raw.csv
+                                cat data.csv >> data_raw_threads.csv
+                                done
 
+                                python3 likwid_environment_counters_threads.py
+                                cat data_ctrs_threads.csv >> ${threads}-data-O2-${size}_ctrs_threads.csv
 
+                                python3 likwid_environment_metrics_threads.py
+                                cat data_metrics_threads.csv >> ${threads}-data-O2-${size}_metrics_threads.csv
 
+                                rm data_raw_threads.csv
+                                rm data_ctrs_threads.csv
+                        done
+		python3 likwid_environment_counters_stats.py
+                python3 likwid_environment_metrics_stats.py
 
+                mv data_raw.csv ${threads}-data-O2-${size}_raw.csv #Create the raw datasets
 
+                cat ${threads}-data-O2-${size}_ctrs_threads.csv >> data_ctrs_threads_header.csv
+                mv data_ctrs_threads_header.csv ${threads}-data-O2-${size}_ctrs_threads.csv
 
+                cat ${threads}-data-O2-${size}_metrics_threads.csv >> data_metrics_threads_header.csv
+                mv data_metrics_threads_header.csv ${threads}-data-O2-${size}_metrics_threads.csv
 
+                rm data*                #Del old data
+                done
 
+	mkdir -p spread_raw/$tun
+        mv *raw.csv spread_raw/$tun
 
+	mkdir -p spread_ctrs_threads/$tun
+        #sed -i 1i"id;data_size;comp_opt;threads;label;Event;HWThread 0;" ${threads}-data-O2-${size}_ctrs_threads.csv
+	mv *ctrs_threads.csv spread_ctrs_threads/$tun
 
+	mkdir -p spread_metrics_threads/$tun
+        #sed -i 1i"id;data_size;comp_opt;threads;label;Event;HWThread 0;" ${threads}-data-O2-${size}_ctrs_threads.csv
+        mv *metrics_threads.csv spread_metrics_threads/$tun
 
+	mkdir -p spread_metrics_stats/$tun
+        mv *metrics.csv spread_metrics_stats/$tun
+
+        mkdir -p spread_ctrs_stats/$tun
+        mv *.csv spread_ctrs_stats/$tun
+        done
+done
+
+#mkdir close-backup
+#mkdir spread-backup
+
+#cp -r close/* close-backup/
+#cp -r spread/* spread-backup/
+#cp time.log close/time.log
+#cp time.log spread/time.log
+
+#source $HOME/tools/spack/share/spack/setup-env.sh
+#spack load python arch=linux-centos7-sandybridge
+#spack load python arch=`spack arch`
+
+#cd close
+#python3 join.py
+
+#cd ..
+
+#cd spread
+#python3 join.py
+
+#cd ..
+#python3 join-close-spread.py --close close/threads-data-partial.csv --spread spread/threads-data-partial.csv --benchname openmp
 
 
