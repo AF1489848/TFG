@@ -11,7 +11,7 @@ public class Main {
 
         String scriptName = scriptPrefix + ".sub";
         String scriptPath = outputDirectory + "/" + scriptName;
-        generarScriptSlurm.generarScript(scriptPath);
+        ScriptSlurm.ScriptGeneration(scriptPath);
 
     }
 

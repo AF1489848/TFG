@@ -2,8 +2,8 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class generarScriptSlurm {
-    public static void generarScript(String scriptPath) {
+public class ScriptSlurm {
+    public static void ScriptGeneration(String scriptPath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(scriptPath))) {
             writer.write("#!/bin/bash -l");
             writer.newLine();
