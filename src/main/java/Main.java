@@ -279,7 +279,7 @@ public class Main {
 
 
         String scriptPrefix = "job_script"; // Prefijo para los nombres de los scripts
-        String outputDirectory = "./target/Scripts"; // Directorio de salida para los scripts
+        String outputDirectory = "./target"; // Directorio de salida para los scripts
 
 
         String scriptName = scriptPrefix + ".sub";
