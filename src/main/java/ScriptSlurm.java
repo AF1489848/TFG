@@ -259,7 +259,7 @@ class ScriptSlurm {
                     "#python3 join.py\n" +
                     "\n" +
                     "#cd ..\n" +
-                    "#python3 join-close-spread.py --close close/threads-data-partial.csv --spread spread/threads-data-partial.csv --benchname openmpff\n" +
+                    "#python3 join-close-spread.py --close close/threads-data-partial.csv --spread spread/threads-data-partial.csv --benchname openmp\n" +
                     "\n");
             writer.newLine();
 
