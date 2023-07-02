@@ -174,22 +174,22 @@ class ScriptSlurm {
                     "        echo $tun\n" +
                     "        #Modify this to the number of cores in your system, cores instead of threads.\n" +
                     "        #todo modify 1..64 instead\n" +
-                    "        for threads in " + System.getProperty("Threads") + "\n" +
+                    "        for threads in " + System.getProperty("Threads2") + "\n" +
                     "        do\n" +
                     "                echo $threads\n" +
                     "                export OMP_NUM_THREADS=$threads\n");
             writer.newLine();
             writer.write("                #USE THESE SIZES FOR STANLEE\n" +
                     "                #for size in 1024\n" +
-                    "                for size in " + System.getProperty("size") + "\n" +
+                    "                for size in " + System.getProperty("size2") + "\n" +
                     "                do\n" +
                     "                        echo $size\n" +
                     "                        export size=$size\n" +
                     "                        echo \"$tun $threads $size\"\n" +
                     "                        gcc -llikwid -lm -fopenmp -pthread -o stream-likwid stream-likwid.c -O2 -DN=$size -DNTIMES=1 -DNTHREADS=$threads -DLIKWID_PERFMON -I /lex/software/LIBRARIES/likwid-5.2.1/include -L /lex/software/LIBRARIES/likwid-5.2.1/lib;\n" +
-                    "                        for kernel  in " + System.getProperty("Kernels") + "\n" +
+                    "                        for kernel  in " + System.getProperty("Kernels2") + "\n" +
                     "                        do\n" +
-                    "\t\t\t\tfor times in " + System.getProperty("nTimes") + "\n" +
+                    "\t\t\t\tfor times in " + System.getProperty("nTimes2") + "\n" +
                     "                                do\n" +
                     "                                likwid-perfctr -g $tun -m -o data.csv -O ./stream-likwid $kernel\n" +
                     "                                cat data.csv >> data_raw.csv\n" +
