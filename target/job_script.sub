@@ -66,22 +66,22 @@ do
       echo $tun
       #Modify this to the number of cores in your system, cores instead of threads.
       #todo modify 1..64 instead
-      for threads in {7..64} ## 64
+      for threads in null
       do
                 echo $threads
                 export OMP_NUM_THREADS=$threads
 
 		#USE THESE SIZES FOR STANLEE
                 #for size in 1024
-                for size in 7936 15872 23808 31744 39680 47616 #55552 63488 71424 79360 87296 95232 103168 111104 119040 126976 134912 142848 150784 158720 166656 174592 182528 190464 198400 206336 214272 222208 230144 #238080 246016 253952 261888 392960 523776 654592 785408 916224 1047040 1177856 1308672 1439488 1570304 1701120 1831936 1962752 2093568 2224384 2355200 2486016 2616832 2747648 2878464 3009280 3140096 3270912 3401728 3532544 3663360 3794176 3924992 4055808 4186624 4587520 5636096 6684672 7733248 8781824 9830400 10878976 11927552 12976128 14024704 15073280 16121856 16777216 33554432 75497472
+                for size in null
                 do
 			echo $size
 			export size=$size
                         echo "$tun $threads $size"
 			gcc -llikwid -lm -fopenmp -pthread -o stream-likwid stream-likwid.c -O2 -DN=$size -DNTIMES=1 -DNTHREADS=$threads -DLIKWID_PERFMON -I /lex/software/LIBRARIES/likwid-5.2.1/include -L /lex/software/LIBRARIES/likwid-5.2.1/lib;	
-			for kernel  in {0..33} 	
+			for kernel  in null 	
 			do 
-				for times in {1..100}
+				for times in null
 				do
 				likwid-perfctr -g $tun -m -o data.csv -O ./stream-likwid $kernel
                 		cat data.csv >> data_raw.csv 
@@ -144,22 +144,22 @@ do
         echo $tun
         #Modify this to the number of cores in your system, cores instead of threads.
         #todo modify 1..64 instead
-        for threads in {1..64}
+        for threads in null
         do
                 echo $threads
                 export OMP_NUM_THREADS=$threads
 
                 #USE THESE SIZES FOR STANLEE
                 #for size in 1024
-                for size in 7936 15872 23808 31744 39680 47616 #55552 63488 71424 79360 87296 95232 103168 111104 119040 126976 134912 142848 150784 158720 166656 174592 182528 190464 198400 206336 214272 222208 230144 #238080 246016 253952 261888 392960 523776 654592 785408 916224 1047040 1177856 1308672 1439488 1570304 1701120 1831936 1962752 2093568 2224384 2355200 2486016 2616832 2747648 2878464 3009280 3140096 3270912 3401728 3532544 3663360 3794176 3924992 4055808 4186624 4587520 5636096 6684672 7733248 8781824 9830400 10878976 11927552 12976128 14024704 15073280 16121856 16777216 33554432 75497472
+                for size in null
                 do
                         echo $size
                         export size=$size
                         echo "$tun $threads $size"
                         gcc -llikwid -lm -fopenmp -pthread -o stream-likwid stream-likwid.c -O2 -DN=$size -DNTIMES=1 -DNTHREADS=$threads -DLIKWID_PERFMON -I /lex/software/LIBRARIES/likwid-5.2.1/include -L /lex/software/LIBRARIES/likwid-5.2.1/lib;
-                        for kernel  in {0..33}
+                        for kernel  in null
                         do
-				for times in {1..100}
+				for times in null
                                 do
                                 likwid-perfctr -g $tun -m -o data.csv -O ./stream-likwid $kernel
                                 cat data.csv >> data_raw.csv
@@ -207,28 +207,4 @@ do
         mv *.csv spread_ctrs_stats/$tun
         done
 done
-
-#mkdir close-backup
-#mkdir spread-backup
-
-#cp -r close/* close-backup/
-#cp -r spread/* spread-backup/
-#cp time.log close/time.log
-#cp time.log spread/time.log
-
-#source $HOME/tools/spack/share/spack/setup-env.sh
-#spack load python arch=linux-centos7-sandybridge
-#spack load python arch=`spack arch`
-
-#cd close
-#python3 join.py
-
-#cd ..
-
-#cd spread
-#python3 join.py
-
-#cd ..
-#python3 join-close-spread.py --close close/threads-data-partial.csv --spread spread/threads-data-partial.csv --benchname openmp
-
 

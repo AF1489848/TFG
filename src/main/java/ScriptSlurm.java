@@ -238,8 +238,6 @@ class ScriptSlurm {
                             "        done\n" +
                             "done\n");
             writer.newLine();
-            writer.write(System.getProperty("datosExtra"));
-            writer.newLine();
 
 
 
